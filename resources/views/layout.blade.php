@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Home</title>
+    <base href="{{asset('')}}">
     <!-- Bootstrap CSS-->
     <link href="fooday/assets/vendors/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome-->
@@ -96,7 +97,7 @@
                 <div class="main-nav">
                   <ul id="main-nav" class="nav nav-pills">
                     <li><a class="current-menu-item" href="{{route('trangchu')}}">Home</a></li>
-                    <li><a href="{{route('menu')}}">Thực đơn</a></li>
+                    <li><a href="{{route('menu-detail')}}">Thực đơn</a></li>
                     <li><a href="{{route('food-type')}}">Món ăn theo loại</a></li>
                     <li><a href="{{route('search')}}">Tìm kiếm</a></li>
                     <li><a href="about.html">Giới thiệu</a></li>

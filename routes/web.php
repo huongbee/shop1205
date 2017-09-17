@@ -16,14 +16,24 @@ Route::get('/',[
 ]);
 
 
-Route::get('menu',[
-	'as' => 'menu',
-	'uses' => 'PageController@getMenu'
-]);
+// Route::get('menu',[
+// 	'as' => 'menu',
+// 	'uses' => 'PageController@getMenu'
+// ]);
 
 Route::get('food-type',[
 	'as' => 'food-type',
 	'uses' => 'PageController@getFoodByType'
+]);
+
+Route::get('load-food-by-type/{id_type}',[
+	'as' => 'ajax-load-food-by-type',
+	'uses' => 'PageController@ajaxGetFoodByType'
+]);
+
+Route::get('ajax-paginator',[
+	'as' => 'ajax-paginator',
+	'uses' => 'PageController@ajaxGetProductPagination'
 ]);
 
 Route::get('search',[
@@ -40,4 +50,9 @@ Route::get('cart',[
 Route::get('get-product',[
 	'as' => 'getProductPagination',
 	'uses' => 'PageController@getProductPagination'
+]);
+
+Route::get('menu-detail/{id?}',[
+	'as' => 'menu-detail',
+	'uses' => 'PageController@getDetailMenu'
 ]);

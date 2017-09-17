@@ -108,14 +108,11 @@ $(document).ready(function(){
         var page = $(this).text();
         if(!jQuery.isNumeric(page)){
             if(page == "«"){
+                page = $('.pagination li.active').text() - 1;
                 if($('.pagination li.active').text() > 1){
                     $('.pagination li.active').prev().addClass('active')
                     $('.pagination li.active').next().removeClass('active')
                 }
-                else{
-                    $('.pagination li:first-child').addClass('disabled')
-                }
-                
             }
             else{
                 if($('.pagination li.active').next().text() != "»"){
@@ -123,21 +120,38 @@ $(document).ready(function(){
                     $('.pagination li.active').prev().removeClass('active')
                     
                 }
-                else{
-                    $('.pagination li:last-child').addClass('disabled')
-                }
+                page = parseInt($('.pagination li.active').text()) + 1;
             }
-            return false;
+            
         }
-        $('.pagination li').each(function(){
+        else{
+          $('.pagination li').each(function(){
             if($(this).text() == 1){
                 $(this).prev().removeClass('disabled')
             }
             $(this).removeClass('active')
-        })
+          })
 
-        $(this).addClass('active')
+          $(this).addClass('active')
+        }
 
+        var maxPageOverOne = $(".pagination li").length - 1
+        console.log(page, maxPageOverOne);
+        if(page !=1){
+          $('.pagination li:first-child').removeClass('disabled')
+        }
+        else{
+          $('.pagination li:first-child').addClass('disabled')
+        }
+        if(page != maxPageOverOne){
+          $('.pagination li:last-child').removeClass('disabled')
+        }
+        else{
+          $('.pagination li:last-child').addClass('disabled')
+        }
+        if(page == 0 || page == maxPageOverOne){
+          return false;
+        }
         $.ajax({
             url: "{{route('getProductPagination')}}",
             type: 'GET',
