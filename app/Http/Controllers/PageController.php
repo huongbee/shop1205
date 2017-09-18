@@ -12,6 +12,8 @@ use App\Menu;
 use App\MenuDetail;
 use App\RoleResource;
 use App\User;
+use App\Cart;
+use Session;
 
 class PageController extends Controller
 {
@@ -105,12 +107,37 @@ class PageController extends Controller
 
 
 
+      public function getAddToCart(Request $req){
+         $qty = isset($req->qty) ? $req->qty : 1;
+         $food = Foods::where('id',$req->id)->first();
+         if($food){
+
+
+            $oldCart = Session::has('cart') ? Session::get('cart') : null;
+            //dd($oldCart);
+            $cart = new Cart($oldCart);
+            
+            $cart->add($food,$req->id,$qty);
+
+            $req->session()->put('cart', $cart); //
+            //dd(Session::get('cart'));
+            //dd($cart);
+            return redirect()->back();
+         }
+
+
+
+      }
+
+
    	public function getSearch(){
    		return view('pages.search');
    	}
 
    	public function getCart(){
-   		return view('pages.cart');
+
+         $cart = Session::has('cart') ? Session::get('cart') : null;
+   		return view('pages.cart',compact('cart'));
    	}
 
 

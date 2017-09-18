@@ -4,7 +4,7 @@
   <div class="blog-item item swin-transition">
     <div class="block-img"><img style="height: 250px; width: 100%" src="fooday/assets/images/hinh_mon_an/{{$monan->image}}" alt="" class="img img-responsive">
       <div class="block-circle price-wrapper"><span class="price woocommerce-Price-amount amount">{{number_format($monan->price)}}</span><span class="price-symbol"> vnđ</span></div>
-      <div class="group-btn"><a href="chi-tiet-mon-an.html" class="swin-btn btn-link"><i class="icons fa fa-link"></i></a><a href="javascript:void(0)" class="swin-btn btn-add-to-card"><i class="fa fa-shopping-basket"></i></a></div>
+      <div class="group-btn"><a href="chi-tiet-mon-an.html" class="swin-btn btn-link"><i class="icons fa fa-link"></i></a><a href="{{route('add-to-cart',[$monan->id])}}" class="swin-btn btn-add-to-card"><i class="fa fa-shopping-basket"></i></a></div>
     </div>
     <div class="block-content">
       <h5 class="title"><a href="chi-tiet-mon-an.html">{{$monan->name}}</a></h5>

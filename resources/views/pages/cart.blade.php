@@ -30,41 +30,26 @@
                             </tr>
                           </thead>
                           <tbody>
+                            @foreach($cart->items as $sanpham)
                             <tr>
                               <td>
-                                <img src="fooday/assets/images/product/product-2b.jpg" width="250px">
-                                <p><br><b>Uncle Herschel's Favorite</b></p>
+                                <img src="fooday/assets/images/hinh_mon_an/{{$sanpham['item']->image}}" width="250px">
+                                <p><br><b>{{$sanpham['item']->name}}</b></p>
                               </td>
-                              <td>$25</td>
+                              <td style="font-size: 18px; color: blue">{{number_format($sanpham['item']->price)}} vnđ</td>
                               <td>
                               <select name="product-qty" id="product-qty" class="form-control" width="50">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
+                                @for($i=1;$i<=5;$i++)
+                                <option value="<?=$i;?>" {{$sanpham['qty'] == $i ? "selected" : '' }}><?=$i;?></option>
+                                @endfor
                               </select>
                               </td>
-                              <td>$25</td>
+                              <td style="font-size: 18px; color: blue">{{number_format($sanpham['price'])}} vnđ</td>
                               <td><a href="#" class="remove" title="Remove this item"><i class="fa fa-trash-o fa-2x"></i></a></td>
                             </tr>
+                            @endforeach
                             <tr>
-                              <td>
-                                <img src="fooday/assets/images/product/product-2b.jpg" width="250px">
-                                <p><br><b>Uncle Herschel's Favorite</b></p>
-                              </td>
-                              <td>$25</td>
-                              <td>
-                              <select name="product-qty" id="product-qty" class="form-control" width="50">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                              </select>
-                              </td>
-                              <td>$25</td>
-                              <td><a href="#" class="remove" title="Remove this item"><i class="fa fa-trash-o fa-2x"></i></a></td>
+                              <td colspan="4" style="text-align: right; font-size: 20px; color: blue">Tổng tiền: <b>{{number_format($cart->totalPrice)}}</b> vnđ</td>
                             </tr>
                           </tbody>
                       </table>     

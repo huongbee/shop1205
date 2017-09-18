@@ -41,6 +41,10 @@ Route::get('search',[
 	'uses' => 'PageController@getSearch'
 ]);
 
+Route::get('add-to-cart/{id}/{qty?}',[
+	'as' => 'add-to-cart',
+	'uses' => 'PageController@getAddToCart'
+]);
 
 Route::get('cart',[
 	'as' => 'cart',
