@@ -141,5 +141,54 @@ class PageController extends Controller
    	}
 
 
+      public function getDelItemCart(Request $req){
+         $food = Foods::where('id',$req->id)->first();
+         if($food){
+            $oldCart = Session::has('cart') ? Session::get('cart') : null;
+            $cart = new Cart($oldCart);
+            $cart->removeItem($req->id);
+
+            if(count($cart->items)<=0){
+               $req->session()->forget('cart');
+               echo "null";
+            }
+            else{
+               $req->session()->put('cart', $cart);
+               //echo 'true';
+               $tongtien = number_format($cart->totalPrice);
+               echo $tongtien;
+            }
+         }
+         else{
+            echo 'false';
+         }
+         return;
+      }
+
+
+public function getUpdateItemCart(Request $req){
+   $food = Foods::where('id',$req->id)->first();
+
+   if($food){
+      $oldCart = Session::has('cart') ? Session::get('cart') : null;
+      
+      $cart = new Cart($oldCart);
+      
+      $cart->update($food, $req->id, $req->qty);
+      
+      $req->session()->put('cart', $cart);
+      
+      $totalPriceItem = number_format($cart->items[$req->id]['price']);
+
+      $totalPrice = number_format($cart->totalPrice);
+
+      echo json_encode([
+         'totalPriceItem'=>$totalPriceItem,
+         'totalPrice'=>$totalPrice,'qty'=>$req->qty
+      ]);
+   }
+}
+
+
 
    }

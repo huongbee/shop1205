@@ -47,4 +47,24 @@ class Cart
 		unset($this->items[$id]);
 	}
 
+	//update
+	public function update($item, $id, $qty=1){
+		$giohang = [
+			'qty'=>$qty, 
+			'price' => $item->price, 
+			'item' => $item
+		];
+		if($this->items){
+			if(array_key_exists($id, $this->items)){
+				$this->totalPrice -= $this->items[$id]['price'];
+				$this->totalQty -= $this->items[$id]['qty'];
+			}
+		}
+		$giohang['price'] = $item->price * $giohang['qty'];
+		$this->items[$id] = $giohang;
+		$this->totalQty = $this->totalQty + $qty;
+		$this->totalPrice = $this->totalPrice + ($giohang['item']->price)*$qty;
+		
+	}
+	
 }

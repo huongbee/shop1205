@@ -46,6 +46,19 @@ Route::get('add-to-cart/{id}/{qty?}',[
 	'uses' => 'PageController@getAddToCart'
 ]);
 
+Route::get('delete-item-cart',[
+	'as' => 'delete-item-cart',
+	'uses' => 'PageController@getDelItemCart'
+]);
+
+Route::get('update-item-cart',[
+	'as' => 'update-item-cart',
+	'uses' => 'PageController@getUpdateItemCart'
+]);
+
+
+
+
 Route::get('cart',[
 	'as' => 'cart',
 	'uses' => 'PageController@getCart'
@@ -60,3 +73,7 @@ Route::get('menu-detail/{id?}',[
 	'as' => 'menu-detail',
 	'uses' => 'PageController@getDetailMenu'
 ]);
+
+Route::get('delete',function(){
+	return Session::forget('cart');
+});

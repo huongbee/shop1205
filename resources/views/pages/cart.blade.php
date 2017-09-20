@@ -15,8 +15,17 @@
               <div class="container">
                 <div class="section-content">
                   <div class="swin-sc swin-sc-title style-2">
-                    <h3 class="title"><span>Chi tiết giỏ hàng</span></h3>
+                    <h3 class="title thongbao">
+                      <span>
+                        @if(isset($cart))
+                          Chi tiết giỏ hàng 
+                        @else
+                          Giỏ hàng đang rỗng
+                        @endif
+                      </span>
+                    </h3>
                   </div>
+                  @if(isset($cart))
                   <div class="reservation-form">
                     <div class="swin-sc swin-sc-contact-form light mtl">
                       <table class="table table-striped" style="text-align: center;">
@@ -31,25 +40,26 @@
                           </thead>
                           <tbody>
                             @foreach($cart->items as $sanpham)
-                            <tr>
+                            <tr class="trHide-{{$sanpham['item']->id}}">
                               <td>
                                 <img src="fooday/assets/images/hinh_mon_an/{{$sanpham['item']->image}}" width="250px">
                                 <p><br><b>{{$sanpham['item']->name}}</b></p>
                               </td>
                               <td style="font-size: 18px; color: blue">{{number_format($sanpham['item']->price)}} vnđ</td>
                               <td>
-                              <select name="product-qty" id="product-qty" class="form-control" width="50">
+                              <select name="product-qty" id="product-qty" class="form-control Qty" width="50" idSP="{{$sanpham['item']->id}}">
                                 @for($i=1;$i<=5;$i++)
                                 <option value="<?=$i;?>" {{$sanpham['qty'] == $i ? "selected" : '' }}><?=$i;?></option>
                                 @endfor
                               </select>
                               </td>
-                              <td style="font-size: 18px; color: blue">{{number_format($sanpham['price'])}} vnđ</td>
-                              <td><a href="#" class="remove" title="Remove this item"><i class="fa fa-trash-o fa-2x"></i></a></td>
+                              <td style="font-size: 18px; color: blue" class="price-{{$sanpham['item']->id}}">{{number_format($sanpham['price'])}} vnđ</td>
+                              <td>
+                                <a class="remove" idSP="{{$sanpham['item']->id}}"  title="Remove this item"><i class="fa fa-trash-o fa-2x"></i></a></td>
                             </tr>
                             @endforeach
                             <tr>
-                              <td colspan="4" style="text-align: right; font-size: 20px; color: blue">Tổng tiền: <b>{{number_format($cart->totalPrice)}}</b> vnđ</td>
+                              <td colspan="4" style="text-align: right; font-size: 20px; color: blue">Tổng tiền: <b class="total" >{{number_format($cart->totalPrice)}}</b> vnđ</td>
                             </tr>
                           </tbody>
                       </table>     
@@ -98,7 +108,9 @@
                         </div>
                       </form>
                     </div>
-                    </div>
+                  </div>
+                  
+                  @endif
                 </div>
               </div>
             </section>
@@ -145,4 +157,53 @@
             </section>
           </div>
         </div>
+  <script>
+      $(document).ready(function(){
+        $('.remove').click(function() {
+            
+            var id = $(this).attr('idSP');
+           
+            $.ajax({
+                url:"{{route('delete-item-cart')}}",
+                data: {id:id}, //biến truyền đi: line_164
+                type: 'GET',
+                success:function(data){
+                    data = jQuery.trim(data)
+                    if(data=='null'){
+                        $('.thongbao').html('<span>Giỏ hàng đang rỗng</span>')
+                        $('.reservation-form').hide()
+                        return false;
+                    }
+                    console.log(data);
+                    $('.total').html(data)
+                    $('.trHide-'+id).hide();
+
+                }
+            })
+        });
+
+        $('.Qty').change(function() {
+            var soluong = $(this).val();
+            var idSP = $(this).attr('idSP')
+            $.ajax({
+                url: "{{route('update-item-cart')}}",
+                data:{
+                    qty: soluong,
+                    id: idSP
+                },
+                type: 'GET',
+                success:function(data){
+                    console.log(data)
+                    data = JSON.parse(data)
+                    $('.price-'+idSP).html(data.totalPriceItem + ' vnđ')
+                    $('.total').html(data.totalPrice)
+                    console.log(data.qty)
+                }
+            })
+
+        });
+        
+
+      })
+  </script>
 @endsection
