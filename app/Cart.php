@@ -59,6 +59,23 @@ class Cart
 				$this->totalPrice -= $this->items[$id]['price'];
 				$this->totalQty -= $this->items[$id]['qty'];
 			}
+
+			/*
+			200k
+				50k 
+					2*25k
+				150k
+					1*150k
+			*/
+
+			/*
+			150k - 
+				1*150
+				u:45k*4 180k
+	
+			330k
+
+			*/
 		}
 		$giohang['price'] = $item->price * $giohang['qty'];
 		$this->items[$id] = $giohang;

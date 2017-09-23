@@ -74,6 +74,12 @@ Route::get('menu-detail/{id?}',[
 	'uses' => 'PageController@getDetailMenu'
 ]);
 
+Route::post('checkout',[
+	'as'=>'checkout',
+	'uses' => 'PageController@postCheckout'
+]);
+
 Route::get('delete',function(){
+	echo  date('Y-m-d');
 	return Session::forget('cart');
 });

@@ -137,6 +137,7 @@ class PageController extends Controller
    	public function getCart(){
 
          $cart = Session::has('cart') ? Session::get('cart') : null;
+         //dd($cart);
    		return view('pages.cart',compact('cart'));
    	}
 
@@ -166,29 +167,88 @@ class PageController extends Controller
       }
 
 
-public function getUpdateItemCart(Request $req){
-   $food = Foods::where('id',$req->id)->first();
+   public function getUpdateItemCart(Request $req){
+      $food = Foods::where('id',$req->id)->first();
 
-   if($food){
-      $oldCart = Session::has('cart') ? Session::get('cart') : null;
-      
-      $cart = new Cart($oldCart);
-      
-      $cart->update($food, $req->id, $req->qty);
-      
-      $req->session()->put('cart', $cart);
-      
-      $totalPriceItem = number_format($cart->items[$req->id]['price']);
+      if($food){
+         $oldCart = Session::has('cart') ? Session::get('cart') : null;
+         
+         $cart = new Cart($oldCart);
+         
+         $cart->update($food, $req->id, $req->qty);
+         
+         $req->session()->put('cart', $cart);
+         
+         $totalPriceItem = number_format($cart->items[$req->id]['price']);
 
-      $totalPrice = number_format($cart->totalPrice);
+         $totalPrice = number_format($cart->totalPrice);
 
-      echo json_encode([
-         'totalPriceItem'=>$totalPriceItem,
-         'totalPrice'=>$totalPrice,'qty'=>$req->qty
-      ]);
+         echo json_encode([
+            'totalPriceItem'=>$totalPriceItem,
+            'totalPrice'=>$totalPrice,'qty'=>$req->qty
+         ]);
+      }
    }
+
+   public function postCheckout(Request $req){
+
+      $this->validate($req,
+         [
+            'fullname' => "required|min:5|max:30",
+            'email' => "required|email",
+            'address' => 'required',
+            'phone' => 'required|min:10|max:20'
+         ],
+         [
+            'fullname.required' => 'Vui lòng nhập họ tên',
+            'fullname.min' => 'Họ tên ít nhất 5 kí tự',
+            'fullname.max' => 'Họ tên không quá 30 kí tự',
+            'email.email' => 'Email không đúng định dạng',
+            'phone.required' => 'Điện thoại không được rỗng',
+            'phone.min' => 'Điện thoại ít nhất 10 kí tự',
+            'phone.max' => 'Điện thoại không quá 20 kí tự',
+         ]);
+      try{
+         $customer = new Customers();
+         $customer->name = $req->fullname;
+         $customer->gender = $req->gender;
+         $customer->email = $req->email;
+         $customer->address = $req->address;
+         $customer->phone = $req->phone;
+         $customer->note = $req->note;
+         $customer->save();
+
+         if($customer){         
+            $cart = Session::get('cart');
+            $totalPrice = $cart->totalPrice;
+
+            $bill = new Bills;
+            $bill->id_customer = $customer->id;
+            $bill->date_order = date('Y-m-d');
+            $bill->total = $totalPrice;
+            $bill->payment_method = $req->payment;
+            $bill->note = $req->note;
+            $bill->save();
+
+            if($bill){
+               foreach($cart->items as $key=>$value){
+                  $bill_detail = new BillDetail;
+                  $bill_detail->id_bill = $bill->id;
+                  $bill_detail->id_food = $key;
+                  $bill_detail->quantity = $value['qty'];
+                  $bill_detail->price = $value['price'];
+                  $bill_detail->save();
+               }
+            }
+            Session::forget('cart');
+            return redirect()->back()->with('thongbao','Đặt hàng thành công');
+         }
+      }
+      catch(Exception $e){
+         throw new Exception("Error Processing Request", 1);
+         
+      }
+   }
+
+
 }
-
-
-
-   }

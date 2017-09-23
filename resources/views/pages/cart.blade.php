@@ -22,6 +22,10 @@
                         @else
                           Giỏ hàng đang rỗng
                         @endif
+
+                        @if(Session::has('thongbao'))
+                            <div>{{Session::get('thongbao')}}</div>
+                        @endif
                       </span>
                     </h3>
                   </div>
@@ -69,18 +73,47 @@
                     <div class="swin-sc swin-sc-contact-form light mtl style-full">
                       <div class="swin-sc swin-sc-title style-2">
                         <h3 class="title"><span>Đặt hàng</span></h3>
+                        <br><br>
+
+                        @if($errors->any())
+
+                          <div class="alert alert-danger">
+                            @foreach($errors->all() as $loi)
+                              <li>{{$loi}}</li>
+                            @endforeach
+                          </div>
+
+                        @endif                        
+
+
                       </div>
-                      <form>
+                      <form method="POST" action="{{route('checkout')}}">
+                        {{csrf_field()}}
                         <div class="form-group">
                           <div class="input-group">
                             <div class="input-group-addon"><i class="fa fa-user"></i></div>
-                            <input type="text" placeholder="Fullname" class="form-control">
+                            <input type="text" placeholder="Fullname" name="fullname" class="form-control" required value="{{ old('fullname') }}">
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <div class="input-group">
+                           
+                            <label style="margin-right: 30px">
+                              <input type="radio" name="gender" value="nam" checked> Nam
+                            </label>
+                            <label style="margin-right: 30px">
+                              <input type="radio" name="gender" value="nữ"> Nữ
+                            </label>
+                            <label style="margin-right: 30px">
+                              <input type="radio" name="gender" value="other"> Khác
+                            </label>
+
                           </div>
                         </div>
                         <div class="form-group">
                           <div class="input-group">
                             <div class="input-group-addon"><i class="fa fa-envelope"></i></div>
-                            <input type="text" placeholder="Email" class="form-control">
+                            <input type="email" placeholder="Email" name="email" value="{{old('email')}}" class="form-control">
                           </div>
                         </div>
                         <div class="form-group">
@@ -88,7 +121,7 @@
                             <div class="input-group-addon">
                               <div class="fa fa-map-marker"></div>
                             </div>
-                            <input type="text" placeholder="Address" class="form-control">
+                            <input type="text" placeholder="Address" name="address" class="form-control"  value="{{old('address')}}">
                           </div>
                         </div>
                         <div class="form-group">
@@ -96,15 +129,25 @@
                             <div class="input-group-addon">
                               <div class="fa fa-phone"></div>
                             </div>
-                            <input type="text" placeholder="Phone" class="form-control">
+                            <input type="text" placeholder="Phone" name="phone" value="{{old('phone')}}" class="form-control">
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <div class="input-group">
+                            <select name="payment">
+                              <option value="Tiền mặt" selected>Tiền mặt</option>
+                              <option value="COD">Ship COD</option>
+                            </select>
                           </div>
                         </div>
 
                         <div class="form-group">
-                          <textarea placeholder="Message" class="form-control"></textarea>
+                          <textarea placeholder="Message" name="note" class="form-control">
+                            <?=old('note');?>
+                          </textarea>
                         </div>
                          <div class="form-group">
-                          <div class="swin-btn-wrap center"><a href="#" class="swin-btn center form-submit"> <span>Checkout</span></a></div>
+                          <div class="swin-btn-wrap center"><button class="btn btn-primary btn-lg"> <span>Checkout</span></button></div>
                         </div>
                       </form>
                     </div>
